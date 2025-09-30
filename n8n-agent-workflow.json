@@ -1,0 +1,1103 @@
+{
+  "nodes": [
+    {
+      "parameters": {
+        "content": "## Simple logistics agent",
+        "height": 1584,
+        "width": 3648
+      },
+      "type": "n8n-nodes-base.stickyNote",
+      "typeVersion": 1,
+      "position": [-496, 560],
+      "id": "f83aa157-3af6-4f06-973c-9eb02309ca28",
+      "name": "Sticky Note1"
+    },
+    {
+      "parameters": {
+        "httpMethod": "POST",
+        "path": "message-sent",
+        "options": {}
+      },
+      "type": "n8n-nodes-base.webhook",
+      "typeVersion": 2.1,
+      "position": [-432, 688],
+      "id": "766a0245-aa2a-4bc0-8c4b-55492acc6343",
+      "name": "Message sent from UI",
+      "webhookId": "1fbb2b6a-d6cf-473f-8005-1a2eb3a0e8fc"
+    },
+    {
+      "parameters": {
+        "model": "anthropic/claude-sonnet-4.5",
+        "options": {}
+      },
+      "type": "@n8n/n8n-nodes-langchain.lmChatOpenRouter",
+      "typeVersion": 1,
+      "position": [544, 1344],
+      "id": "460356fa-7d79-4eca-80eb-fa8b0a15a8f0",
+      "name": "OpenRouter Chat Model1",
+      "credentials": {
+        "openRouterApi": {
+          "id": "1ZcFNJ78LHvSAvpw",
+          "name": "OpenRouter account"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "operation": "getAll",
+        "tableId": "chat",
+        "returnAll": true,
+        "filters": {
+          "conditions": [
+            {
+              "keyName": "booking_id",
+              "condition": "eq",
+              "keyValue": "={{ $('Parse-data').item.json.booking_id ?? \"a7ad1cf2-d67e-49bc-85ee-65a4548df999\" }}"
+            },
+            {
+              "keyName": "task_id",
+              "condition": "eq",
+              "keyValue": "={{ $('Parse-data').item.json.task_id ?? \"a7ad1cf2-d67e-49bc-85ee-65a4548df999\" }}"
+            }
+          ]
+        }
+      },
+      "type": "n8n-nodes-base.supabase",
+      "typeVersion": 1,
+      "position": [16, 688],
+      "id": "00df9548-49d9-4f00-bb3c-3c0851f4a255",
+      "name": "Supabase get full chat",
+      "credentials": {
+        "supabaseApi": {
+          "id": "zeog5WRilOA65lWR",
+          "name": "MakeDataSmart2025"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "operation": "get",
+        "tableId": "bookings",
+        "filters": {
+          "conditions": [
+            {
+              "keyName": "id",
+              "keyValue": "={{ $('Parse-data').item.json.booking_id ?? \"352bb325-3a31-41b1-bd43-fba8d4fbacdc\" }}"
+            }
+          ]
+        }
+      },
+      "type": "n8n-nodes-base.supabase",
+      "typeVersion": 1,
+      "position": [464, 688],
+      "id": "de243f60-d966-427e-aeee-c70e2f80f63b",
+      "name": "Get Booking",
+      "alwaysOutputData": true,
+      "credentials": {
+        "supabaseApi": {
+          "id": "zeog5WRilOA65lWR",
+          "name": "MakeDataSmart2025"
+        }
+      },
+      "onError": "continueRegularOutput"
+    },
+    {
+      "parameters": {
+        "chatId": "=7699630973",
+        "text": "={{ /*n8n-auto-generated-fromAI-override*/ $fromAI('Text', ``, 'string') }}",
+        "additionalFields": {
+          "appendAttribution": false
+        }
+      },
+      "type": "n8n-nodes-base.telegramTool",
+      "typeVersion": 1.2,
+      "position": [640, 1488],
+      "id": "49e61dd7-ffc1-4df4-8b56-c10cc3569939",
+      "name": "Telegram send chat to operator",
+      "webhookId": "b250e44b-7267-4f9a-8cb8-815cc01b196a",
+      "credentials": {
+        "telegramApi": {
+          "id": "oZFtYmQL70qfVeLT",
+          "name": "DigiHome Assistant Bot"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "descriptionType": "manual",
+        "toolDescription": "Get property knowledge by property_id",
+        "operation": "get",
+        "tableId": "properties",
+        "filters": {
+          "conditions": [
+            {
+              "keyName": "id",
+              "keyValue": "={{ /*n8n-auto-generated-fromAI-override*/ $fromAI('conditions0_Value', ``, 'string') }}"
+            }
+          ]
+        }
+      },
+      "type": "n8n-nodes-base.supabaseTool",
+      "typeVersion": 1,
+      "position": [800, 1472],
+      "id": "ea6a6e1f-ffa0-40e2-94c5-b197192996f8",
+      "name": "supabase get property",
+      "credentials": {
+        "supabaseApi": {
+          "id": "zeog5WRilOA65lWR",
+          "name": "MakeDataSmart2025"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "descriptionType": "manual",
+        "toolDescription": "Fetches all open tasks related to this property",
+        "operation": "getAll",
+        "tableId": "tasks",
+        "returnAll": true,
+        "matchType": "allFilters",
+        "filters": {
+          "conditions": [
+            {
+              "keyName": "property_id",
+              "condition": "eq",
+              "keyValue": "={{ /*n8n-auto-generated-fromAI-override*/ $fromAI('conditions0_Field_Value', `property_id of the tasks you want to fetch`, 'string') }}"
+            },
+            {
+              "keyName": "status",
+              "condition": "neq",
+              "keyValue": "cancelled"
+            },
+            {
+              "keyName": "status",
+              "condition": "neq",
+              "keyValue": "completed"
+            }
+          ]
+        }
+      },
+      "type": "n8n-nodes-base.supabaseTool",
+      "typeVersion": 1,
+      "position": [1008, 1712],
+      "id": "0d26f1d5-899c-4b5a-92d5-34593d75a99b",
+      "name": "supabase get tasks",
+      "credentials": {
+        "supabaseApi": {
+          "id": "zeog5WRilOA65lWR",
+          "name": "MakeDataSmart2025"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "operation": "getAll",
+        "tableId": "partners",
+        "returnAll": true
+      },
+      "type": "n8n-nodes-base.supabaseTool",
+      "typeVersion": 1,
+      "position": [1088, 1504],
+      "id": "8e1dde28-10e3-4dbf-8734-84a009ea2729",
+      "name": "Supabase get partners",
+      "credentials": {
+        "supabaseApi": {
+          "id": "zeog5WRilOA65lWR",
+          "name": "MakeDataSmart2025"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "descriptionType": "manual",
+        "toolDescription": "Add new tasks to system if no suitable existing tasks exist.",
+        "tableId": "tasks",
+        "fieldsUi": {
+          "fieldValues": [
+            {
+              "fieldId": "property_id",
+              "fieldValue": "={{ /*n8n-auto-generated-fromAI-override*/ $fromAI('fieldValues0_Field_Value', ``, 'string') }}"
+            },
+            {
+              "fieldId": "task_description",
+              "fieldValue": "={{ /*n8n-auto-generated-fromAI-override*/ $fromAI('fieldValues1_Field_Value', ``, 'string') }}"
+            },
+            {
+              "fieldId": "can_start_after",
+              "fieldValue": "={{ $fromAI('task_can_start_after', `ISO compatible date string ex: 2025-10-05T16:00:00.000Z`, 'string') }}"
+            },
+            {
+              "fieldId": "due_date",
+              "fieldValue": "={{ $fromAI('task_due_date', `ISO compatible date string ex: 2025-10-05T16:00:00.000Z`, 'string') }}"
+            },
+            {
+              "fieldId": "type",
+              "fieldValue": "={{ $fromAI('fieldValues4_Field_Value', `cleaning, maintenance, inspection, other`, 'string', 'maintenance') }}"
+            },
+            {
+              "fieldId": "partner_id",
+              "fieldValue": "={{ $fromAI('task_partner_id', `Fill partner.id from the list of partners fetched earliers`, 'string') }}"
+            },
+            {
+              "fieldId": "status",
+              "fieldValue": "pending"
+            },
+            {
+              "fieldId": "booking_id",
+              "fieldValue": "={{ /*n8n-auto-generated-fromAI-override*/ $fromAI('fieldValues7_Field_Value', ``, 'string') }}"
+            }
+          ]
+        }
+      },
+      "type": "n8n-nodes-base.supabaseTool",
+      "typeVersion": 1,
+      "position": [1168, 1712],
+      "id": "62f8111c-e4f7-4624-ba09-1df26b1924f1",
+      "name": "supabase add task",
+      "credentials": {
+        "supabaseApi": {
+          "id": "zeog5WRilOA65lWR",
+          "name": "MakeDataSmart2025"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "descriptionType": "manual",
+        "toolDescription": "Update an existing task by it's id then insert the fields you want to update in the json",
+        "operation": "update",
+        "tableId": "tasks",
+        "filters": {
+          "conditions": [
+            {
+              "keyName": "id",
+              "condition": "eq",
+              "keyValue": "={{ $fromAI('id', `The id of the task to update`, 'string') }}"
+            }
+          ]
+        },
+        "fieldsUi": {
+          "fieldValues": [
+            {
+              "fieldId": "can_start_after",
+              "fieldValue": "={{ /*n8n-auto-generated-fromAI-override*/ $fromAI('fieldValues0_Field_Value', ``, 'string') }}"
+            },
+            {
+              "fieldId": "due_date",
+              "fieldValue": "={{ /*n8n-auto-generated-fromAI-override*/ $fromAI('fieldValues1_Field_Value', ``, 'string') }}"
+            },
+            {
+              "fieldId": "type",
+              "fieldValue": "={{ /*n8n-auto-generated-fromAI-override*/ $fromAI('fieldValues2_Field_Value', ``, 'string') }}"
+            },
+            {
+              "fieldId": "partner_id",
+              "fieldValue": "={{ /*n8n-auto-generated-fromAI-override*/ $fromAI('fieldValues3_Field_Value', ``, 'string') }}"
+            },
+            {
+              "fieldId": "status",
+              "fieldValue": "={{ /*n8n-auto-generated-fromAI-override*/ $fromAI('fieldValues4_Field_Value', `Use this field to update status of a task. Valid statuses: \"completed\", \"in progress\", \"confirmed\", \"cancelled\", \"pending\"`, 'string') }}"
+            },
+            {
+              "fieldId": "task_description",
+              "fieldValue": "={{ /*n8n-auto-generated-fromAI-override*/ $fromAI('fieldValues5_Field_Value', ``, 'string') }}"
+            }
+          ]
+        }
+      },
+      "type": "n8n-nodes-base.supabaseTool",
+      "typeVersion": 1,
+      "position": [1328, 1712],
+      "id": "ad86cdae-2dd4-43d0-8579-276de706db5b",
+      "name": "Supabase update task",
+      "credentials": {
+        "supabaseApi": {
+          "id": "zeog5WRilOA65lWR",
+          "name": "MakeDataSmart2025"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "jsCode": "\nreturn JSON.parse($input.first().json.body)"
+      },
+      "type": "n8n-nodes-base.code",
+      "typeVersion": 2,
+      "position": [-208, 688],
+      "id": "cdab70f2-ed9f-4b14-80e8-fe0c60fabd6e",
+      "name": "Parse-data"
+    },
+    {
+      "parameters": {
+        "operation": "getAll",
+        "tableId": "faq",
+        "returnAll": true,
+        "filters": {
+          "conditions": [
+            {
+              "keyName": "property_id",
+              "condition": "eq",
+              "keyValue": "={{ $('Get Booking')?.item?.property_id ?? \"a7ad1cf2-d67e-49bc-85ee-65a4548df999\" }}"
+            },
+            {
+              "keyName": "property_id",
+              "condition": "is",
+              "keyValue": "null"
+            }
+          ]
+        }
+      },
+      "type": "n8n-nodes-base.supabase",
+      "typeVersion": 1,
+      "position": [688, 688],
+      "id": "7c3d909c-87f6-4104-b411-5631f19b6ba6",
+      "name": "Get FAQ",
+      "credentials": {
+        "supabaseApi": {
+          "id": "zeog5WRilOA65lWR",
+          "name": "MakeDataSmart2025"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "useCustomSchema": true,
+        "operation": "get",
+        "tableId": "properties",
+        "filters": {
+          "conditions": [
+            {
+              "keyName": "id",
+              "keyValue": "={{ ($('Get Booking').all().length == 0 ? null : $('Get Booking').item?.property_id ) ?? ($('Get Task').all().length == 0 ? null : $('Get Task')?.item?.property_id) ?? \"03789c8b-65e7-44bc-af8d-72b2e4aa6645\" }}"
+            }
+          ]
+        }
+      },
+      "type": "n8n-nodes-base.supabase",
+      "typeVersion": 1,
+      "position": [912, 688],
+      "id": "3cd34dd0-ebca-4fd6-881b-c075b352bea1",
+      "name": "Get Property info",
+      "alwaysOutputData": true,
+      "credentials": {
+        "supabaseApi": {
+          "id": "zeog5WRilOA65lWR",
+          "name": "MakeDataSmart2025"
+        }
+      },
+      "onError": "continueRegularOutput"
+    },
+    {
+      "parameters": {
+        "operation": "get",
+        "tableId": "tasks",
+        "filters": {
+          "conditions": [
+            {
+              "keyName": "id",
+              "keyValue": "={{ $('Parse-data').item.json.task_id ?? \"352bb325-3a31-41b1-bd43-fba8d4fbacdc\" }}"
+            }
+          ]
+        }
+      },
+      "type": "n8n-nodes-base.supabase",
+      "typeVersion": 1,
+      "position": [240, 688],
+      "id": "e0b2977c-9ec6-44da-846e-0c715d42f8cd",
+      "name": "Get Task",
+      "alwaysOutputData": true,
+      "credentials": {
+        "supabaseApi": {
+          "id": "zeog5WRilOA65lWR",
+          "name": "MakeDataSmart2025"
+        }
+      },
+      "onError": "continueRegularOutput"
+    },
+    {
+      "parameters": {
+        "descriptionType": "manual",
+        "toolDescription": "Get chat log for a given task_id. Useful when coordinating when the partner can come and do the task",
+        "operation": "getAll",
+        "tableId": "chat",
+        "returnAll": true,
+        "filters": {
+          "conditions": [
+            {
+              "keyName": "task_id",
+              "condition": "eq",
+              "keyValue": "={{ /*n8n-auto-generated-fromAI-override*/ $fromAI('conditions0_Field_Value', ``, 'string') }}"
+            }
+          ]
+        }
+      },
+      "type": "n8n-nodes-base.supabaseTool",
+      "typeVersion": 1,
+      "position": [1648, 1712],
+      "id": "a0f82988-75a6-43fc-83e4-4c83a5c2e31f",
+      "name": "supabase get chat by taks_id",
+      "credentials": {
+        "supabaseApi": {
+          "id": "zeog5WRilOA65lWR",
+          "name": "MakeDataSmart2025"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "descriptionType": "manual",
+        "toolDescription": "Get chat log for a given booking_id. Useful when coordinating when the partner can come and do the task at the property where guests reside",
+        "operation": "getAll",
+        "tableId": "chat",
+        "returnAll": true,
+        "filters": {
+          "conditions": [
+            {
+              "keyName": "booking_id",
+              "condition": "eq",
+              "keyValue": "={{ /*n8n-auto-generated-fromAI-override*/ $fromAI('conditions0_Field_Value', ``, 'string') }}"
+            }
+          ]
+        }
+      },
+      "type": "n8n-nodes-base.supabaseTool",
+      "typeVersion": 1,
+      "position": [1808, 1712],
+      "id": "93a6dd2b-c131-4316-9da1-6d17f0a8c774",
+      "name": "supabase get chat by booking_id",
+      "credentials": {
+        "supabaseApi": {
+          "id": "zeog5WRilOA65lWR",
+          "name": "MakeDataSmart2025"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "descriptionType": "manual",
+        "toolDescription": "Use this tool to send a chat message to booking guest:\n- the guest by defining booking_id",
+        "tableId": "chat",
+        "fieldsUi": {
+          "fieldValues": [
+            {
+              "fieldId": "sender",
+              "fieldValue": "agent"
+            },
+            {
+              "fieldId": "message",
+              "fieldValue": "={{ $fromAI('message', ``, 'string') }}"
+            },
+            {
+              "fieldId": "booking_id",
+              "fieldValue": "={{ $fromAI('booking_id', `booking_id if you want to communicate with the guest`, 'string') }}"
+            },
+            {
+              "fieldId": "source",
+              "fieldValue": "app"
+            }
+          ]
+        }
+      },
+      "type": "n8n-nodes-base.supabaseTool",
+      "typeVersion": 1,
+      "position": [1968, 1712],
+      "id": "02094b7c-85be-4c52-8577-9f2fc0c36b7a",
+      "name": "supabase add chat to booking",
+      "credentials": {
+        "supabaseApi": {
+          "id": "zeog5WRilOA65lWR",
+          "name": "MakeDataSmart2025"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "descriptionType": "manual",
+        "toolDescription": "Use this tool to send a chat message to partner via the task:\n- The task partner by defining task_id",
+        "tableId": "chat",
+        "fieldsUi": {
+          "fieldValues": [
+            {
+              "fieldId": "sender",
+              "fieldValue": "agent"
+            },
+            {
+              "fieldId": "message",
+              "fieldValue": "={{ $fromAI('message', ``, 'string') }}"
+            },
+            {
+              "fieldId": "task_id",
+              "fieldValue": "={{ $fromAI('task_id', `task_id field, fill this to communicate with external partner`, 'string') }}"
+            },
+            {
+              "fieldId": "source",
+              "fieldValue": "app"
+            }
+          ]
+        }
+      },
+      "type": "n8n-nodes-base.supabaseTool",
+      "typeVersion": 1,
+      "position": [2128, 1712],
+      "id": "8dcd1580-9fed-40e7-b464-b2e01b694d71",
+      "name": "supabase add chat to task",
+      "credentials": {
+        "supabaseApi": {
+          "id": "zeog5WRilOA65lWR",
+          "name": "MakeDataSmart2025"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "descriptionType": "manual",
+        "toolDescription": "Get booking by booking_id, useful to fetch check-in info or know what property this booking is from",
+        "operation": "get",
+        "tableId": "bookings",
+        "filters": {
+          "conditions": [
+            {
+              "keyName": "id",
+              "keyValue": "={{ /*n8n-auto-generated-fromAI-override*/ $fromAI('conditions0_Value', ``, 'string') }}"
+            }
+          ]
+        }
+      },
+      "type": "n8n-nodes-base.supabaseTool",
+      "typeVersion": 1,
+      "position": [1232, 1504],
+      "id": "1563b180-ea7d-4d7e-8b99-237f1ce997ce",
+      "name": "supabase get booking",
+      "credentials": {
+        "supabaseApi": {
+          "id": "zeog5WRilOA65lWR",
+          "name": "MakeDataSmart2025"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "jsCode": "return {\n\"FAQ\": $('Get FAQ').all(),\n\"chat\": $('Supabase get full chat').all(),\n\"Property\": $('Get Property info').all(),\n\"Booking\": $('Get Booking').all(),\n\"Task\": $('Get Task').all(),\n}"
+      },
+      "type": "n8n-nodes-base.code",
+      "typeVersion": 2,
+      "position": [1136, 688],
+      "id": "5ad5821c-2c85-46d6-8b92-10652ce803da",
+      "name": "Chat input data"
+    },
+    {
+      "parameters": {
+        "updates": ["message"],
+        "additionalFields": {}
+      },
+      "type": "n8n-nodes-base.telegramTrigger",
+      "typeVersion": 1.2,
+      "position": [-96, 1024],
+      "id": "733647c7-38e0-48cb-9de4-d13e395f656f",
+      "name": "Telegram Trigger1",
+      "webhookId": "dbc58fc3-1da7-430c-b904-8b6ec18860ee",
+      "credentials": {
+        "telegramApi": {
+          "id": "oZFtYmQL70qfVeLT",
+          "name": "DigiHome Assistant Bot"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "descriptionType": "manual",
+        "toolDescription": "Add a general FAQ for all properties",
+        "tableId": "faq",
+        "fieldsUi": {
+          "fieldValues": [
+            {
+              "fieldId": "question",
+              "fieldValue": "={{ /*n8n-auto-generated-fromAI-override*/ $fromAI('fieldValues0_Field_Value', ``, 'string') }}"
+            },
+            {
+              "fieldId": "answer",
+              "fieldValue": "={{ /*n8n-auto-generated-fromAI-override*/ $fromAI('fieldValues1_Field_Value', ``, 'string') }}"
+            }
+          ]
+        }
+      },
+      "type": "n8n-nodes-base.supabaseTool",
+      "typeVersion": 1,
+      "position": [2096, 1456],
+      "id": "1c1b8305-cec9-4702-9105-fdcf67e1fded",
+      "name": "supabase FAQ add general",
+      "credentials": {
+        "supabaseApi": {
+          "id": "zeog5WRilOA65lWR",
+          "name": "MakeDataSmart2025"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "descriptionType": "manual",
+        "toolDescription": "Add a specific FAQ for one property_id",
+        "tableId": "faq",
+        "fieldsUi": {
+          "fieldValues": [
+            {
+              "fieldId": "question",
+              "fieldValue": "={{ /*n8n-auto-generated-fromAI-override*/ $fromAI('fieldValues0_Field_Value', ``, 'string') }}"
+            },
+            {
+              "fieldId": "answer",
+              "fieldValue": "={{ /*n8n-auto-generated-fromAI-override*/ $fromAI('fieldValues1_Field_Value', ``, 'string') }}"
+            },
+            {
+              "fieldId": "property_id",
+              "fieldValue": "={{ /*n8n-auto-generated-fromAI-override*/ $fromAI('fieldValues2_Field_Value', ``, 'string') }}"
+            }
+          ]
+        }
+      },
+      "type": "n8n-nodes-base.supabaseTool",
+      "typeVersion": 1,
+      "position": [2256, 1456],
+      "id": "6539cf42-31b9-4cae-9785-03ac1423c054",
+      "name": "supabase FAQ add property_id",
+      "credentials": {
+        "supabaseApi": {
+          "id": "zeog5WRilOA65lWR",
+          "name": "MakeDataSmart2025"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "descriptionType": "manual",
+        "toolDescription": "Use tool to update existing FAQ entry",
+        "operation": "update",
+        "tableId": "faq",
+        "filters": {
+          "conditions": [
+            {
+              "keyName": "id",
+              "condition": "eq",
+              "keyValue": "={{ /*n8n-auto-generated-fromAI-override*/ $fromAI('conditions0_Field_Value', ``, 'string') }}"
+            }
+          ]
+        },
+        "fieldsUi": {
+          "fieldValues": [
+            {
+              "fieldId": "question",
+              "fieldValue": "={{ /*n8n-auto-generated-fromAI-override*/ $fromAI('fieldValues0_Field_Value', ``, 'string') }}"
+            },
+            {
+              "fieldId": "answer",
+              "fieldValue": "={{ /*n8n-auto-generated-fromAI-override*/ $fromAI('fieldValues1_Field_Value', ``, 'string') }}"
+            }
+          ]
+        }
+      },
+      "type": "n8n-nodes-base.supabaseTool",
+      "typeVersion": 1,
+      "position": [1936, 1456],
+      "id": "55e56a8d-f5cf-40c4-842e-ab0a74b24114",
+      "name": "supabase FAQ update entry",
+      "credentials": {
+        "supabaseApi": {
+          "id": "zeog5WRilOA65lWR",
+          "name": "MakeDataSmart2025"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "promptType": "define",
+        "text": "={{ $json }}",
+        "options": {
+          "systemMessage": "=Date: {{ $now }}\n\nYou are DigiHome's logistics coordinater agent. You are an expert at handling logisitics for rental properties with minimal intervention and maxium efficiency.\n\nFocus on keeping this short, concise, but still happy\n\n# Guest support workflows:\n\n## General guest support agent\n1. Your job is to be factual and helpful, but never to helpful. Only use information available at the property database table or in the FAQ.\n2. You are allowed to use internal LLM knowledge if the guest asks general questions about what to do in an area, for example Bergen.\n3. If you do not know the answer to the question or you are lacking knowledge, send a message to the operator admin using the tool \"Telegram send chat to operator\". And then send a message to the booking or task that you are looking into it and will get back to them.\n\n\n## Task coordination workflow\nYour job is to make sure that tasks are completed in a well manner. They usually follow this flow:\n1. A guests report an incident.\n2. Collect the full context of the incident and photos if needed, so that it is always well documented and good enough for potentially being sent for a quote request to a maintenence company.\nYou analyze whether this incident is something that the guest can resolve alone before escalating without making the guest annoyed.\n3. If this needs to be handled by a professional or the guest is not capable to handle it themselves, then you need to request a professional quote from our maintenence company.\n\nNormal task management flow:\n1. Guest reports incident, could be a broken item or bad cleaning\n2. You check if there are any open tasks related to this property using tool \"supabase get tasks\"\n3. If no existing task for this topic, add a new task by first fetching appropriate partners using tool \"supabase get partners\"\n4. Add the task using tool \"supabase add task\"\n5. Send a chat message to the partner by using tool \"supabase add chat to task\" by populating task_id field, where you ask if task is accepted \n6. Send chat message to guest acknowledging the damage and informing that a task has been created using tool \"supabase add chat to booking\" by populating booking_id field\n\n7. When task is created start the coordination where your goal is to find a suitable time for the partner to perform the task. Ask the partner what timeframes works for them\n8. Use the partner's preferred time to ask the guests using tool \"supabase add chat to booking\" if that works for them.\n9. If the time does not work for the guest, ask for a different time and continue until both parties agree.\n10. Then send access instructions for this property to the partner so they can perform their task\n\n11. If partner send message saying they have started or completed the task, update the status of the task using tool \"supabase update task\" to reflect the new status, example \"status: completed\" or \"status: in_progress\", and send message to guest with the new task status\nUse tools \"supabase get chat by booking_id\" and \"supabase get chat by task_id\" to get current status of the opposing party.\n\n12. If partner does not give a status update, ask them what the status is.\n\n\n## FAQ maintainer\nIf you get information from telegram from the operator, please add information to FAQ, either to specific property_id if you think this is a specific knowledge using tool \"supabase FAQ add property_id\" or without property_id if you think this is general FAQ using tool \"supabase FAQ add general\".\n- Ensure you do not duplicate entries, check in FAQ \"supabase FAQ get all\" if you already have suitable FAQ covering it\n\n## Notes\n- Ensure to always send a chat message to the sender\n- If you meet any issues send a message with the issue using tool \"Telegram send chat to operator\"",
+          "maxIterations": 20,
+          "passthroughBinaryImages": true
+        }
+      },
+      "id": "d230ac92-71c7-49dc-9181-de42c4765d7a",
+      "name": "DigiHome support and logistics coordinator",
+      "type": "@n8n/n8n-nodes-langchain.agent",
+      "typeVersion": 1.7,
+      "position": [1344, 1232]
+    },
+    {
+      "parameters": {
+        "descriptionType": "manual",
+        "toolDescription": "Add a specific FAQ for one property_id",
+        "operation": "getAll",
+        "tableId": "faq",
+        "returnAll": true
+      },
+      "type": "n8n-nodes-base.supabaseTool",
+      "typeVersion": 1,
+      "position": [2416, 1456],
+      "id": "235e82ab-b70f-41eb-b56b-837b74d17cc0",
+      "name": "supabase FAQ get all",
+      "credentials": {
+        "supabaseApi": {
+          "id": "zeog5WRilOA65lWR",
+          "name": "MakeDataSmart2025"
+        }
+      }
+    }
+  ],
+  "connections": {
+    "Message sent from UI": {
+      "main": [
+        [
+          {
+            "node": "Parse-data",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "OpenRouter Chat Model1": {
+      "ai_languageModel": [
+        [
+          {
+            "node": "DigiHome support and logistics coordinator",
+            "type": "ai_languageModel",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Supabase get full chat": {
+      "main": [
+        [
+          {
+            "node": "Get Task",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Get Booking": {
+      "main": [
+        [
+          {
+            "node": "Get FAQ",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Telegram send chat to operator": {
+      "ai_tool": [
+        [
+          {
+            "node": "DigiHome support and logistics coordinator",
+            "type": "ai_tool",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "supabase get property": {
+      "ai_tool": [
+        [
+          {
+            "node": "DigiHome support and logistics coordinator",
+            "type": "ai_tool",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "supabase get tasks": {
+      "ai_tool": [
+        [
+          {
+            "node": "DigiHome support and logistics coordinator",
+            "type": "ai_tool",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Supabase get partners": {
+      "ai_tool": [
+        [
+          {
+            "node": "DigiHome support and logistics coordinator",
+            "type": "ai_tool",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "supabase add task": {
+      "ai_tool": [
+        [
+          {
+            "node": "DigiHome support and logistics coordinator",
+            "type": "ai_tool",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Supabase update task": {
+      "ai_tool": [
+        [
+          {
+            "node": "DigiHome support and logistics coordinator",
+            "type": "ai_tool",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Parse-data": {
+      "main": [
+        [
+          {
+            "node": "Supabase get full chat",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Get FAQ": {
+      "main": [
+        [
+          {
+            "node": "Get Property info",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Get Property info": {
+      "main": [
+        [
+          {
+            "node": "Chat input data",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Get Task": {
+      "main": [
+        [
+          {
+            "node": "Get Booking",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "supabase get chat by taks_id": {
+      "ai_tool": [
+        [
+          {
+            "node": "DigiHome support and logistics coordinator",
+            "type": "ai_tool",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "supabase get chat by booking_id": {
+      "ai_tool": [
+        [
+          {
+            "node": "DigiHome support and logistics coordinator",
+            "type": "ai_tool",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "supabase add chat to booking": {
+      "ai_tool": [
+        [
+          {
+            "node": "DigiHome support and logistics coordinator",
+            "type": "ai_tool",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "supabase add chat to task": {
+      "ai_tool": [
+        [
+          {
+            "node": "DigiHome support and logistics coordinator",
+            "type": "ai_tool",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "supabase get booking": {
+      "ai_tool": [
+        [
+          {
+            "node": "DigiHome support and logistics coordinator",
+            "type": "ai_tool",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Chat input data": {
+      "main": [
+        [
+          {
+            "node": "DigiHome support and logistics coordinator",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Telegram Trigger1": {
+      "main": [
+        [
+          {
+            "node": "DigiHome support and logistics coordinator",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "supabase FAQ add general": {
+      "ai_tool": [
+        [
+          {
+            "node": "DigiHome support and logistics coordinator",
+            "type": "ai_tool",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "supabase FAQ add property_id": {
+      "ai_tool": [
+        [
+          {
+            "node": "DigiHome support and logistics coordinator",
+            "type": "ai_tool",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "supabase FAQ update entry": {
+      "ai_tool": [
+        [
+          {
+            "node": "DigiHome support and logistics coordinator",
+            "type": "ai_tool",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "supabase FAQ get all": {
+      "ai_tool": [
+        [
+          {
+            "node": "DigiHome support and logistics coordinator",
+            "type": "ai_tool",
+            "index": 0
+          }
+        ]
+      ]
+    }
+  },
+  "pinData": {
+    "Message sent from UI": [
+      {
+        "headers": {
+          "host": "n8n.digihome.no",
+          "user-agent": "Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/140.0.0.0 Safari/537.36 Edg/140.0.0.0",
+          "content-length": "277",
+          "accept": "*/*",
+          "accept-encoding": "gzip, deflate, br, zstd",
+          "accept-language": "nb,no;q=0.9,en-GB;q=0.8,en;q=0.7,en-US;q=0.6",
+          "content-type": "text/plain;charset=UTF-8",
+          "dnt": "1",
+          "origin": "http://localhost:3000",
+          "priority": "u=1, i",
+          "referer": "http://localhost:3000/",
+          "sec-ch-ua": "\"Chromium\";v=\"140\", \"Not=A?Brand\";v=\"24\", \"Microsoft Edge\";v=\"140\"",
+          "sec-ch-ua-mobile": "?0",
+          "sec-ch-ua-platform": "\"macOS\"",
+          "sec-fetch-dest": "empty",
+          "sec-fetch-mode": "cors",
+          "sec-fetch-site": "cross-site",
+          "x-forwarded-for": "82.134.92.202",
+          "x-forwarded-host": "n8n.digihome.no",
+          "x-forwarded-proto": "https",
+          "x-request-id": "8662ecfa-a25d-4fa3-b7e0-efa355e7970f",
+          "x-request-start": "1759271291772"
+        },
+        "params": {},
+        "query": {},
+        "body": "[{\"id\":\"588e8f4c-fdb0-43ca-9776-57b6170a0009\",\"task_id\":\"c5caa06a-5ce3-4b69-8fda-1a1803a0ad12\",\"booking_id\":null,\"message\":\"I can do it at 14:00\",\"sender\":\"partner\",\"source\":\"app\",\"created_at\":\"2025-09-30T22:28:11.729346+00:00\",\"updated_at\":\"2025-09-30T22:28:11.729346+00:00\"}]",
+        "webhookUrl": "https://n8n.digihome.no/webhook/message-sent",
+        "executionMode": "production"
+      }
+    ],
+    "Telegram Trigger1": [
+      {
+        "update_id": 548857441,
+        "message": {
+          "message_id": 65,
+          "from": {
+            "id": 7699630973,
+            "is_bot": false,
+            "first_name": "Mathias",
+            "last_name": "Haugsbø",
+            "language_code": "en"
+          },
+          "chat": {
+            "id": 7699630973,
+            "first_name": "Mathias",
+            "last_name": "Haugsbø",
+            "type": "private"
+          },
+          "date": 1759267886,
+          "reply_to_message": {
+            "message_id": 64,
+            "from": {
+              "id": 8339434659,
+              "is_bot": true,
+              "first_name": "DigiHome Assistant",
+              "username": "digihome_assistant_bot"
+            },
+            "chat": {
+              "id": 7699630973,
+              "first_name": "Mathias",
+              "last_name": "Haugsbø",
+              "type": "private"
+            },
+            "date": 1759267763,
+            "text": "🤖 DigiHome Agent Update:\n\nGuest Sophie Schmidt (booking: a7ad1cf2-d67e-49bc-85ee-65a4548df388) has requested a baby cot be delivered to property 5da1f9ce-47d8-4a1d-9e2d-866da165c678 before check-in on Oct 22, 2024.\n\nI'm having technical difficulties creating the task in the system (foreign key constraint issue). Could you please:\n1. Manually arrange baby cot delivery with Home Clean Solutions or appropriate cleaning partner\n2. Ensure delivery before Oct 22nd at 3:00 PM check-in time\n\nI've already informed the guest we'll arrange this. Thanks!"
+          },
+          "text": "Please try again, remember to get all partners first. To fetch a real partner_id"
+        }
+      }
+    ]
+  },
+  "meta": {
+    "templateCredsSetupCompleted": true,
+    "instanceId": "2971f654d237e118d6d5c88db76077ac7d39fea8232f435ca215a4ca1ffe9181"
+  }
+}

@@ -55,16 +55,16 @@ export default function ChatComponent({
         // Mark only the latest message for blinking
         const latestMessage = messages[messages.length - 1];
         setLatestMessageId(latestMessage.id);
-        
+
         // Clear latest message blink after 2 seconds
         setTimeout(() => setLatestMessageId(null), 2000);
       }
-      
+
       // Mark that initial load is complete
       if (isInitialLoad) {
         setIsInitialLoad(false);
       }
-      
+
       setLastMessageCount(messages.length);
 
       // Wait for next tick to ensure DOM is updated
@@ -83,73 +83,61 @@ export default function ChatComponent({
   }
 
   return (
-    <>
-      <div className="text-sm font-medium">{title}</div>
-      <ScrollArea
-        ref={scrollAreaRef}
-        className={`rounded p-2 transition-all duration-200 ${containerClass} ${
-          isBlinking 
-            ? "border-2 border-blue-400 animate-pulse" 
-            : "border border-gray-200"
-        }`}
-      >
-        <div className="space-y-2">
-          {messages.map((msg) => (
-            <div
-              key={msg.id}
-              className={`p-2 rounded text-sm transition-all duration-300 ${
-                role === "guest"
-                  ? msg.sender === "user"
-                    ? "bg-blue-100 mr-8"
-                    : "bg-gray-100 ml-8"
-                  : msg.sender === "partner"
-                    ? "bg-green-100 ml-4"
-                    : "bg-gray-100 mr-4"
-              } ${
-                latestMessageId === msg.id
-                  ? "ring-2 ring-yellow-400 ring-opacity-75 animate-pulse shadow-lg"
-                  : ""
-              }`}
-            >
-              <div className="font-medium text-xs text-gray-500 mb-1">
-                {msg.sender}
+    <div className={`flex flex-col ${containerClass}`}>
+      {title && <div className="text-sm font-medium text-slate-700 mb-2">{title}</div>}
+      
+      {/* Messages Area */}
+      <div className="flex-1 min-h-0">
+        <ScrollArea
+          ref={scrollAreaRef}
+          className={`rounded-lg p-3 transition-all duration-200 h-full ${
+            isBlinking
+              ? "border-2 border-blue-400 animate-pulse bg-blue-50/30"
+              : "border border-slate-300 bg-white/90"
+          }`}
+        >
+          <div className="space-y-2">
+            {messages.map((msg) => (
+              <div
+                key={msg.id}
+                className={`p-3 rounded-lg text-sm transition-all duration-300 ${
+                  role === "guest"
+                    ? msg.sender === "user"
+                      ? "bg-blue-100 mr-8 text-blue-900"
+                      : "bg-slate-100 ml-8 text-slate-800"
+                    : msg.sender === "partner"
+                      ? "bg-emerald-100 ml-4 text-emerald-900"
+                      : "bg-slate-100 mr-4 text-slate-800"
+                } ${
+                  latestMessageId === msg.id
+                    ? "ring-2 ring-amber-400 ring-opacity-75 animate-pulse shadow-lg"
+                    : ""
+                }`}
+              >
+                <div className="font-medium text-xs text-slate-500 mb-1 capitalize">
+                  {msg.sender}
+                </div>
+                {msg.message}
               </div>
-              {msg.message}
-            </div>
-          ))}
-        </div>
-      </ScrollArea>
+            ))}
+          </div>
+        </ScrollArea>
+      </div>
 
       {/* Message Input */}
       {onSendMessage && (
-        <div className={role === "guest" ? "flex gap-2" : "space-y-2"}>
-          {role === "guest" ? (
-            <>
-              <Input
-                placeholder="Type as guest..."
-                value={newMessage}
-                onChange={(e) => setNewMessage(e.target.value)}
-                onKeyDown={(e) => e.key === "Enter" && handleSendMessage()}
-              />
-              <Button onClick={handleSendMessage} size="sm">
-                Send
-              </Button>
-            </>
-          ) : (
-            <>
-              <Textarea
-                placeholder="Type as partner..."
-                value={newMessage}
-                onChange={(e) => setNewMessage(e.target.value)}
-                rows={3}
-              />
-              <Button onClick={handleSendMessage} className="w-full">
-                Send as Partner
-              </Button>
-            </>
-          )}
+        <div className="flex-shrink-0 space-y-2 mt-3">
+          <Textarea
+            placeholder={`Type as ${role}...`}
+            value={newMessage}
+            onChange={(e) => setNewMessage(e.target.value)}
+            rows={2}
+          />
+          <Button onClick={handleSendMessage} className="w-full" variant="default">
+            Send as {role === "guest" ? "Guest" : "Partner"}
+          </Button>
         </div>
       )}
-    </>
+    </div>
   );
 }
