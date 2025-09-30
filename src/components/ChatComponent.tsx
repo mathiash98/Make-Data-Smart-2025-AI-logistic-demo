@@ -22,6 +22,10 @@ export default function ChatComponent({
 }: ChatComponentProps) {
   const scrollAreaRef = useRef<HTMLDivElement>(null);
   const [newMessage, setNewMessage] = useState("");
+  const [isBlinking, setIsBlinking] = useState(false);
+  const [lastMessageCount, setLastMessageCount] = useState(0);
+  const [isInitialLoad, setIsInitialLoad] = useState(true);
+  const [latestMessageId, setLatestMessageId] = useState<string | null>(null);
 
   const scrollToBottom = () => {
     if (scrollAreaRef.current) {
@@ -42,12 +46,33 @@ export default function ChatComponent({
 
   useEffect(() => {
     if (messages && messages.length > 0) {
+      // Check if new messages arrived (but not on initial load)
+      if (messages.length > lastMessageCount && !isInitialLoad) {
+        // Trigger frame blink effect
+        setIsBlinking(true);
+        setTimeout(() => setIsBlinking(false), 1000);
+
+        // Mark only the latest message for blinking
+        const latestMessage = messages[messages.length - 1];
+        setLatestMessageId(latestMessage.id);
+        
+        // Clear latest message blink after 2 seconds
+        setTimeout(() => setLatestMessageId(null), 2000);
+      }
+      
+      // Mark that initial load is complete
+      if (isInitialLoad) {
+        setIsInitialLoad(false);
+      }
+      
+      setLastMessageCount(messages.length);
+
       // Wait for next tick to ensure DOM is updated
       setTimeout(() => {
         scrollToBottom();
       }, 0);
     }
-  }, [messages]);
+  }, [messages, lastMessageCount, isInitialLoad]);
 
   if (!messages) {
     return (
@@ -62,13 +87,17 @@ export default function ChatComponent({
       <div className="text-sm font-medium">{title}</div>
       <ScrollArea
         ref={scrollAreaRef}
-        className={`border rounded p-2 ${containerClass}`}
+        className={`rounded p-2 transition-all duration-200 ${containerClass} ${
+          isBlinking 
+            ? "border-2 border-blue-400 animate-pulse" 
+            : "border border-gray-200"
+        }`}
       >
         <div className="space-y-2">
           {messages.map((msg) => (
             <div
               key={msg.id}
-              className={`p-2 rounded text-sm ${
+              className={`p-2 rounded text-sm transition-all duration-300 ${
                 role === "guest"
                   ? msg.sender === "user"
                     ? "bg-blue-100 mr-8"
@@ -76,6 +105,10 @@ export default function ChatComponent({
                   : msg.sender === "partner"
                     ? "bg-green-100 ml-4"
                     : "bg-gray-100 mr-4"
+              } ${
+                latestMessageId === msg.id
+                  ? "ring-2 ring-yellow-400 ring-opacity-75 animate-pulse shadow-lg"
+                  : ""
               }`}
             >
               <div className="font-medium text-xs text-gray-500 mb-1">

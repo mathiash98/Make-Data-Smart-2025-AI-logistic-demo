@@ -26,7 +26,7 @@ export default function useInbox(inboxType: ("booking" | "task")[]) {
     Tables<"chat">[] | null
   >();
 
-  useMemo(() => {
+  useEffect(() => {
     if (selectedBookingId) {
       fetchChatMessages(selectedBookingId, undefined).then((messages) => {
         setBookingChatToRender(messages);
@@ -39,7 +39,7 @@ export default function useInbox(inboxType: ("booking" | "task")[]) {
   const [taskChatToRender, setTaskChatToRender] = useState<
     Tables<"chat">[] | null
   >();
-  useMemo(() => {
+  useEffect(() => {
     if (selectedTaskId) {
       fetchChatMessages(undefined, selectedTaskId).then((messages) => {
         setTaskChatToRender(messages);
@@ -51,10 +51,12 @@ export default function useInbox(inboxType: ("booking" | "task")[]) {
 
   useEffect(() => {
     fetchAllChats().then(setChats);
-    const cleanup = setupSupabaseSubscription();
-
-    return cleanup;
   }, []);
+
+  useEffect(() => {
+    const cleanup = setupSupabaseSubscription();
+    return cleanup;
+  }, [selectedBookingId, selectedTaskId]);
 
   async function fetchAllBookings() {
     const { data, error } = await supabaseClient
@@ -139,20 +141,15 @@ export default function useInbox(inboxType: ("booking" | "task")[]) {
             const newMessage = payload.new as Tables<"chat">;
             console.info("New chat message received:", newMessage);
 
-            console.debug(bookingChatToRender, taskChatToRender);
-
-            if (
-              bookingChatToRender &&
-              newMessage.booking_id === bookingChatToRender[0]?.booking_id
-            ) {
+            // Check if this message belongs to currently selected booking
+            if (newMessage.booking_id && newMessage.booking_id === selectedBookingId) {
               setBookingChatToRender((prev) =>
                 prev ? [...prev, newMessage] : [newMessage]
               );
             }
-            if (
-              taskChatToRender &&
-              newMessage.task_id === taskChatToRender[0]?.task_id
-            ) {
+            
+            // Check if this message belongs to currently selected task
+            if (newMessage.task_id && newMessage.task_id === selectedTaskId) {
               setTaskChatToRender((prev) =>
                 prev ? [...prev, newMessage] : [newMessage]
               );
