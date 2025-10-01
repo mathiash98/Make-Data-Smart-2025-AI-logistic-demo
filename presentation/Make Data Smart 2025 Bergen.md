@@ -1,3 +1,183 @@
+---
+theme: gaia
+_class: lead
+paginate: true
+backgroundColor: #fff
+backgroundImage: url('https://marp.app/assets/hero-background.svg')
+marp: true
+---
+
+# Hvordan erstatte logistikkoperatøren med AI Agenter?
+
+- Mathias Haugsbø - CTO DigiHome AS & DigiSale AS
+
+<!-- Two images side-by-side (works in Marp via raw HTML) -->
+<div style="display:flex; gap:32px; align-items:center; justify-content:center;">
+  <img src="./Alle-samlet---Banner.png" style="max-width:45%; height:auto;" />
+  <img src="./Mathias-Haugsbø.jpg" style="max-width:35%; height:auto; border-radius:6px;" />
+</div>
+
+Fallback (uncomment if HTML blocked)
+| ![](./Alle-samlet---Banner.png) | ![](./Mathias-Haugsbø.jpg) |
+| --- | --- |
+
+<!-- TODO: QR Code for GitHub repo -->
+
+---
+
+_An artificial intelligence (AI) agent is a system that autonomously performs tasks by designing workflows with available tools._
+
+- Utføre oppgaver autonomt
+- Bruke verktøy (tools) for å utføre oppgaver
+- Ha en form for minne eller kontekst for å kunne håndtere komplekse oppgaver over tid
+- Helst handle automatisk uten at menneskelig input er nødvendig basert på spesifikke mål.
+- Mange såkalte "AI Agenter" i dag er egentlig bare chatbots med tilgang til litt kunnskap
+
+---
+
+# Dagens mål
+
+- Ta steget ut av ChatGPT og inn i praktiske løsninger
+- Lage et realistisk eksempel på en AI logistikk agent
+
+---
+
+# Komponenter
+
+![bg left:40% 90%](./Agent-komponenter.png)
+
+- LLM
+  - Claude Sonnet 4.5
+  - OpenAI GPT5
+  - Gemini
+  - Open source: Mistral, Llama
+- Kunnskapsbase
+- Tools
+  - APIer
+
+---
+
+## Frameworks
+
+| Verktøy                  | Beskrivelse                           |
+| ------------------------ | ------------------------------------- |
+| Langchain                | Self coded, self hosted               |
+| AG2 AgentOS              | Self coded, multi agent orchestration |
+| Elevenlabs               | Taleagenter                           |
+| n8n                      | Hosted low code                       |
+| Zapier                   | Hosted low code                       |
+| Microsoft Power Automate | Hosted low code                       |
+
+---
+
+![bg left:40% 95%](./LLM-pareto-frontier.png)
+
+# Velge LLM
+
+- Pris
+- Funksjonalitet
+- Hastighet
+- Personvern
+- Smartness
+- Pareto frontier (IQ/$)
+  - https://winston-bosan.github.io/llm-pareto-frontier/
+
+---
+
+# Velge verktøy
+
+- 80/20 regel
+  - 80% tid på selve prosessen
+  - 20% tid på koding
+- Hvor teknisk er du?
+- Hvor mye tid har du?
+- Hva trenger du egentlig?
+- Eksisterende data systemer man kan bruke?
+  - SAP, Salesforce, Dynamics, Hubspot, Zendesk?
+- n8n + supabase for enkle demoer
+
+---
+
+# 1: Chatbot agent
+
+"Hvor mange bor i Bergen?"
+
+- LLM
+- Prompt
+- User input
+
+---
+
+# 2: Chatbot med kontekst
+
+"Når er checkin i denne leiligheten?"
+
+"Har dere babyseng?"
+
+- LLM
+- Prompt
+- Kunnskapsbase
+- User input
+
+---
+
+# 3: Chatbot som kan lage tasks
+
+"Vaskemaskinen starter ikke"
+
+- LLM
+- Prompt
+- Kunnskapsbase
+- Tools
+- Database
+- User input
+
+---
+
+# 4. AI logistikk koordinator
+
+"Koordinere vedlikeholdsoppgaver mellom beboer og partner"
+
+- LLM
+- Prompt
+- Kunnskapsbase
+- Tools
+- Database
+- User input
+- Partner input
+
+---
+
+# Profit?
+
+- Lett å komme i gang
+- De tre K-ene; Kontekst, kontekst, kontekst
+- Neste steg:
+  - Prompt eval, A/B testing, Guardrails
+- Bruk mest tid på arbeidsflytene, følg prosessen manuelt først
+- En AI agent er lik en ansatt under opplæring
+- Spørsmål?
+
+Mathias Haugsbø
+
+<!-- TODO: QR Code to GitHub repo -->
+
+---
+
+# Ressurser
+
+- https://github.com/mathiash98/Make-Data-Smart-2025-AI-logistic-demo
+- n8n - https://n8n.io
+- supabase - https://supabase.com
+- LLM Frontier - https://winston-bosan.github.io/llm-pareto-frontier/
+- https://docs.google.com/document/d/1rsaK53T3Lg5KoGwvf8ukOUvbELRtH-V0LnOIFDxBryE
+- https://addyo.substack.com/p/the-prompt-engineering-playbook-for
+- https://cookbook.openai.com/examples/how_to_use_guardrails
+
+---
+
+Notater
+
 # "Hvordan erstatte logistikkoperatøren med AI Agenter"
 
 Mathias fra DigiHome jobber daglig med å automatisere alle de interne logistikkoperasjonene fra gjestekommunikasjon, vedlikeholdsrapportering, koordinering av håndverkere, renholdere og bestilling av forbruksartikler. Bli med når Mathias viser deg hvordan du kan raskt komme i gang med AI agenter ved low code verktøy som gir raskt resultater og brukbare verktøy.
@@ -10,11 +190,9 @@ Talking points:
   - Kristoffer Zieba snakket om hvordan AI-Agenter og MCP forandrer måten vi jobber med data hvordan man går fra RAG systemer til Multi-agentiske systemer som samarbeider og løser komplekse oppgaver sammen.
   - Florian Pujol snakket om ansvarlig bruk av AI for å kode robuste løsninger
 - Denne sesjonen har som mål å gå mer i dybden på hvordan du kan komme i gang med reelle løsninger.
-
   - Ta gjerne frem laptopen og noter ned
 
 - AI agent definisjon:
-
   - For å kvalifisere som en agent må den kunne:
     - Autonomt utføre oppgaver
     - Bruke verktøy (tools) for å utføre oppgaver
@@ -23,12 +201,10 @@ Talking points:
   - Mange såkalte "AI Agenter" i dag er egentlig bare chatbots med tilgang til litt kunnskap
 
 - Vårt mål:
-
   - Ta steget ut av ChatGPT og inn i praktiske løsninger
   - Hvordan kan vi bruke AI agenter til å automatisere arbeidsoppgaver
 
 - Hvilke komponenter har vi i en AI agent
-
   - LLM
     - GPT5
     - Claude Sonnet
@@ -41,7 +217,6 @@ Talking points:
   - Tools
 
 - Hvilke verktøy kan vi bruke for å bygge AI agenter
-
   - Langchain
   - n8n
   - Zapier
@@ -57,7 +232,6 @@ Talking points:
   | Microsoft Power Automate | Hosted low code                           |
 
 - Hvordan velge LLM
-
   - Pris/IQ-Test https://winston-bosan.github.io/llm-pareto-frontier/
     ![[Pasted image 20250929132639.png]]
   - Funksjonalitet -> Alle de store har multimodal funksjoner, altså støtter tools, bilder og tekst
@@ -66,7 +240,6 @@ Talking points:
   - Tilgjengelighet av API -> Jeg bruker som regel OpenRouter som gir et API endepunkt å forholde seg til
 
 - Hvordan velge verktøy
-
   - Hvor teknisk er du?
   - Hvor mye tid har du?
   - Hva trenger man egentlig?
@@ -76,7 +249,6 @@ Talking points:
   - For permanent løsninger i selskaper med tekniske ressurser er det fort gunstig å bruke en open source løsning som Langchain eller AG2 AgentOS og kode løsningen selv da man fort ender opp med å knote med integrasjoner i n8n og Zapier da man ikke har typesikkerhet og må bruke HTTP request blokker som er vanskelige å debugge.
 
 - Hvordan komme i gang
-
   - https://n8n.io
   - https://chat.openai.com
   - https://claude.ai
@@ -85,7 +257,6 @@ Talking points:
   - Eksempel: "n8n: Create a N8N json workflow for an AI agent that does X, Y and Z using openrouter and different tools with telegram as interface" og så kan man lime inn JSON teksten rett inn i n8n og så har et utgangspunkt.
 
 - "AI Agent" i sin enkleste form:
-
   - LLM + Prompts + Tools
   - Eksempel: En agent som bestiller pizza
   - LLM: GPT5
@@ -93,25 +264,21 @@ Talking points:
   - Tools: API til en pizzarestaurant
 
 - Eksempel2: En agent som automatiserer gjestekommunikasjon
-
   - LLM: GPT5
   - Prompts: "Du er en hjelpsom assistent som svarer på eposter fra gjester"
   - Tools: Gmail API, Booking.com API, Airtable API
 
 - Eksempel3: En telegram agent som gjør ting for deg
-
   - LLM: GPT5
   - Prompts: "Du er en hjelpsom assistent som gjør ting for meg"
   - Tools: Telegram API, Gmail API,
 
 - Eksempel3: En agent som automatiserer hele logistikkoperasjonen i et utleieselskap
-
   - LLM: GPT5
   - Prompts: "Du er en hjelpsom assistent som håndterer logistikk for et utleieselskap"
   - Tools: n8n, Supabase, outlook, tasksystem, twilio for sms, "notatblokk" for AIen for å behandle samme task over tid.
 
 - Hvordan få en helautomatisk AI Agent?
-
   - Bruk en database som Supabase eller Airtable til å lagre tasks
   - Bruk n8n eller Zapier til å lage workflows som trigges av nye tasks i databasen
   - Bruk LLM til å behandle tasks og bestemme hva som skal gjøres
@@ -121,14 +288,7 @@ Talking points:
   - Bruk webhooks til å trigge workflows fra eksterne systemer
 
 - I denne demoen har jeg ikke vært så grundig på prompt engineering
-
   - Når man skal sette agenter i produksjon må man bruke en del tid på finjustering av prompts og helst bruke metrics og a/b testing for å finne de beste promptene og modellene
     - Skjermbildet viser Claude sin veldig enkle prompt playground med evaluaring hvor du kan manuelt score resultatene og sammenligne LLM modeller og prompt iterasjon for å validere om resultatet blir bedre. ![[Pasted image 20250930152119.png]]
   - Viktig å sette på plass guard rails om applikasjonen skal brukes av andre enn deg selv
     - https://cookbook.openai.com/examples/how_to_use_guardrails og mange andre nettsider
-
-- Ressurser
-  - n8n - https://n8n.io
-  - https://docs.google.com/document/d/1rsaK53T3Lg5KoGwvf8ukOUvbELRtH-V0LnOIFDxBryE
-  - https://addyo.substack.com/p/the-prompt-engineering-playbook-for
-  - https://cookbook.openai.com/examples/how_to_use_guardrails
