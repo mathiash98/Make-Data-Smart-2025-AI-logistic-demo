@@ -14,6 +14,7 @@ marp: true
   height: 80%; /* control location on y-axis */
   justify-content: space-evenly;
   align-items: center;
+  gap: 20px; /* space between images */
 }
 </style>
 
@@ -32,6 +33,12 @@ marp: true
 <div>
 
 ![w:200 ](./Mathias-Haugsbø.jpg)
+
+</div>
+
+<div>
+
+![w:200 ](./qr-code.svg)
 
 </div>
 
@@ -122,6 +129,8 @@ _An artificial intelligence (AI) agent is a system that autonomously performs ta
 - Prompt
 - User input
 
+![bg left:20% w:200 ](./qr-code.svg)
+
 ---
 
 # 2: Chatbot med kontekst
@@ -135,6 +144,8 @@ _An artificial intelligence (AI) agent is a system that autonomously performs ta
 - Kunnskapsbase
 - User input
 
+![bg left:20% w:200 ](./qr-code.svg)
+
 ---
 
 # 3: Chatbot som kan lage tasks
@@ -147,6 +158,8 @@ _An artificial intelligence (AI) agent is a system that autonomously performs ta
 - Tools
 - Database
 - User input
+
+![bg left:20% w:200 ](./qr-code.svg)
 
 ---
 
@@ -162,6 +175,8 @@ _An artificial intelligence (AI) agent is a system that autonomously performs ta
 - User input
 - Partner input
 
+![bg left:20% w:200 ](./qr-code.svg)
+
 ---
 
 # Profit?
@@ -175,6 +190,8 @@ _An artificial intelligence (AI) agent is a system that autonomously performs ta
 - Spørsmål?
 
 Mathias Haugsbø
+
+![bg left:15% w:200 ](./qr-code.svg)
 
 <!-- TODO: QR Code to GitHub repo -->
 

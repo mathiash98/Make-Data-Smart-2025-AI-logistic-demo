@@ -1,5 +1,14 @@
 # Make Data Smart 2025 - AI Agent test setup
 
+## Mathias Haugsbø
+
+CTO and Co-founder of DigiHome AS and DigiSale AS
+https://digihome.no/
+
+https://www.linkedin.com/in/mathias-haugsbo/
+
+Likes to automate processes and reduce manual work.
+
 ## Setup:
 
 1. Create supabase project and get the URL and anon key
