@@ -7,19 +7,35 @@ backgroundImage: url('https://marp.app/assets/hero-background.svg')
 marp: true
 ---
 
+<style>
+  /* use on containing element to display images side by side */
+.inline-images {
+  display: flex;
+  height: 80%; /* control location on y-axis */
+  justify-content: space-evenly;
+  align-items: center;
+}
+</style>
+
 # Hvordan erstatte logistikkoperatøren med AI Agenter?
 
 - Mathias Haugsbø - CTO DigiHome AS & DigiSale AS
 
-<!-- Two images side-by-side (works in Marp via raw HTML) -->
-<div style="display:flex; gap:32px; align-items:center; justify-content:center;">
-  <img src="./Alle-samlet---Banner.png" style="max-width:45%; height:auto;" />
-  <img src="./Mathias-Haugsbø.jpg" style="max-width:35%; height:auto; border-radius:6px;" />
+<div class="inline-images">
+
+<div>
+
+![w:700](./Alle-samlet---Banner.png)
+
 </div>
 
-Fallback (uncomment if HTML blocked)
-| ![](./Alle-samlet---Banner.png) | ![](./Mathias-Haugsbø.jpg) |
-| --- | --- |
+<div>
+
+![w:200 ](./Mathias-Haugsbø.jpg)
+
+</div>
+
+</div>
 
 <!-- TODO: QR Code for GitHub repo -->
 
