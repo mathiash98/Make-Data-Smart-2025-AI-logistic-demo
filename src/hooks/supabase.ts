@@ -133,6 +133,7 @@ export type Database = {
           answer: string;
           created_at: string | null;
           id: string;
+          is_process: boolean;
           property_id: string | null;
           question: string;
           updated_at: string | null;
@@ -141,6 +142,7 @@ export type Database = {
           answer: string;
           created_at?: string | null;
           id?: string;
+          is_process?: boolean;
           property_id?: string | null;
           question: string;
           updated_at?: string | null;
@@ -149,6 +151,7 @@ export type Database = {
           answer?: string;
           created_at?: string | null;
           id?: string;
+          is_process?: boolean;
           property_id?: string | null;
           question?: string;
           updated_at?: string | null;
@@ -225,6 +228,8 @@ export type Database = {
       };
       tasks: {
         Row: {
+          action_log: string | null;
+          ai_reasoning: string | null;
           booking_id: string | null;
           can_start_after: string | null;
           created_at: string | null;
@@ -240,6 +245,8 @@ export type Database = {
           updated_at: string | null;
         };
         Insert: {
+          action_log?: string | null;
+          ai_reasoning?: string | null;
           booking_id?: string | null;
           can_start_after?: string | null;
           created_at?: string | null;
@@ -255,6 +262,8 @@ export type Database = {
           updated_at?: string | null;
         };
         Update: {
+          action_log?: string | null;
+          ai_reasoning?: string | null;
           booking_id?: string | null;
           can_start_after?: string | null;
           created_at?: string | null;

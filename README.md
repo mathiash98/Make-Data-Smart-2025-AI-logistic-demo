@@ -2,8 +2,8 @@
 
 ## Mathias Haugsbø
 
-CTO and Co-founder of DigiHome AS and DigiSale AS
-https://digihome.no/
+CTO and Co-founder of Heimby AS and DigiSale AS
+https://heimby.no/
 
 https://www.linkedin.com/in/mathias-haugsbo/
 

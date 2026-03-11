@@ -20,15 +20,9 @@ marp: true
 
 # Hvordan erstatte logistikkoperatøren med AI Agenter?
 
-- Mathias Haugsbø - CTO DigiHome AS & DigiSale AS
+- Mathias Haugsbø - CTO Proptonomy AS & Heimby AS
 
 <div class="inline-images">
-
-<div>
-
-![w:700](./Alle-samlet---Banner.png)
-
-</div>
 
 <div>
 
@@ -213,7 +207,7 @@ Notater
 
 # "Hvordan erstatte logistikkoperatøren med AI Agenter"
 
-Mathias fra DigiHome jobber daglig med å automatisere alle de interne logistikkoperasjonene fra gjestekommunikasjon, vedlikeholdsrapportering, koordinering av håndverkere, renholdere og bestilling av forbruksartikler. Bli med når Mathias viser deg hvordan du kan raskt komme i gang med AI agenter ved low code verktøy som gir raskt resultater og brukbare verktøy.
+Mathias fra Heimby jobber daglig med å automatisere alle de interne logistikkoperasjonene fra gjestekommunikasjon, vedlikeholdsrapportering, koordinering av håndverkere, renholdere og bestilling av forbruksartikler. Bli med når Mathias viser deg hvordan du kan raskt komme i gang med AI agenter ved low code verktøy som gir raskt resultater og brukbare verktøy.
 
 Og så vise praktisk eksempler bygd på n8n slik som Njål viste pluss litt teknisk på hvordan man faktisk setter det opp.
 

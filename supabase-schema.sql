@@ -26,6 +26,7 @@ CREATE TABLE faq (
     question TEXT NOT NULL,
     answer TEXT NOT NULL,
     property_id UUID REFERENCES properties(id) ON DELETE CASCADE,
+    is_process BOOLEAN DEFAULT FALSE,
     created_at TIMESTAMPTZ DEFAULT NOW(),
     updated_at TIMESTAMPTZ DEFAULT NOW()
 );
@@ -60,12 +61,14 @@ CREATE TABLE tasks (
     property_id UUID NOT NULL REFERENCES properties(id) ON DELETE CASCADE,
     booking_id UUID REFERENCES bookings(id) ON DELETE SET NULL,
     task_description TEXT NOT NULL,
+    ai_reasoning TEXT,
+    action_log TEXT,
     start_date TIMESTAMPTZ,
     end_date TIMESTAMPTZ,
     can_start_after TIMESTAMPTZ,
     due_date TIMESTAMPTZ,
     type task_type NOT NULL,
-    status task_status NOT NULL DEFAULT 'pending',
+    status TEXT NOT NULL DEFAULT 'pending',
     partner_id UUID REFERENCES partners(id) ON DELETE SET NULL,
     created_at TIMESTAMPTZ DEFAULT NOW(),
     updated_at TIMESTAMPTZ DEFAULT NOW(),
@@ -136,3 +139,9 @@ CREATE INDEX idx_partners_email ON partners(email);
 CREATE INDEX idx_chat_task_id ON chat(task_id);
 CREATE INDEX idx_chat_booking_id ON chat(booking_id);
 CREATE INDEX idx_chat_created_at ON chat(created_at);
+
+-- Realtime configuration
+-- Enable realtime for postgres_changes on tables used in useInbox.ts
+ALTER PUBLICATION supabase_realtime ADD TABLE chat;
+ALTER PUBLICATION supabase_realtime ADD TABLE bookings;
+ALTER PUBLICATION supabase_realtime ADD TABLE tasks;

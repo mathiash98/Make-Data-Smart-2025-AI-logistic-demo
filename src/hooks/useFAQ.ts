@@ -52,6 +52,7 @@ export default function useFAQ(propertyId?: string) {
       throw error;
     }
 
+    setFaqs((prev) => [data, ...prev]);
     return data;
   }
 
@@ -61,11 +62,15 @@ export default function useFAQ(propertyId?: string) {
       .update(updates)
       .eq("id", id)
       .select()
-      .single();
+      .maybeSingle();
 
     if (error) {
       console.error(error);
       throw error;
+    }
+
+    if (data) {
+      setFaqs((prev) => prev.map((faq) => (faq.id === id ? data : faq)));
     }
 
     return data;
@@ -78,6 +83,8 @@ export default function useFAQ(propertyId?: string) {
       console.error(error);
       throw error;
     }
+
+    setFaqs((prev) => prev.filter((faq) => faq.id !== id));
   }
 
   function setupSupabaseSubscription() {
@@ -92,7 +99,9 @@ export default function useFAQ(propertyId?: string) {
           // Only update if this FAQ matches our property filter
           if (!propertyId || faqData.property_id === propertyId) {
             if (payload.eventType === "INSERT") {
-              setFaqs((prev) => [faqData, ...prev]);
+              setFaqs((prev) =>
+                prev.some((f) => f.id === faqData.id) ? prev : [faqData, ...prev]
+              );
             } else if (payload.eventType === "UPDATE") {
               setFaqs((prev) =>
                 prev.map((faq) => (faq.id === faqData.id ? faqData : faq))
